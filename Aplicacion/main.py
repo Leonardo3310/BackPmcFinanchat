@@ -3,8 +3,24 @@ from pydantic import BaseModel
 import predicciones as pred
 from typing import List
 from io import BytesIO
+from fastapi.middleware.cors import CORSMiddleware
+import nltk
+
+# Verificar si el recurso 'punkt' ya está disponible
+try:
+    nltk.data.find('tokenizers/punkt_tab')
+except LookupError:
+    nltk.download('punkt_tab')
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Aquí pones el origen de tu frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class Opinion(BaseModel):
     opinion: str
@@ -35,6 +51,7 @@ async def reentrenar_modelo(file: UploadFile = File(...)):
         return matrics
 
     except Exception as e:
+        print(f"Error en el servidor: {e}")
         raise HTTPException(status_code=500, detail=f"Error durante el reentrenamiento: {str(e)}")
     
 #uvicorn main:app --reload 
