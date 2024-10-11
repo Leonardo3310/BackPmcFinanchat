@@ -1,0 +1,99 @@
+# Ignorar archivos generados por macOS
+.DS_Store
+
+# Ignorar archivos compilados de Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Ignorar archivos de virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env
+
+# Archivos de configuración de entornos virtuales
+.env
+*.env
+*.envrc
+.env.local
+
+# Archivos de logs
+*.log
+*.out
+*.err
+
+# Archivos de bases de datos locales
+*.sqlite3
+*.db
+
+# Archivos de empaquetado
+*.egg
+*.egg-info/
+dist/
+build/
+develop-eggs/
+eggs/
+parts/
+sdist/
+wheels/
+
+# Ignorar configuraciones de IDEs y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de pruebas y coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,[0-9]*
+*.prof
+profiler/
+*.lprof
+
+# Archivos de documentación
+docs/_build/
+*.rst
+*.md
+
+# Archivos de dependencias
+pip-log.txt
+pip-delete-this-directory.txt
+poetry.lock
+
+# Archivos generados por sistemas de CI/CD
+.github/
+.circleci/
+.travis.yml
+*.pem
+
+# Archivos de despliegue
+*.bak
+*.swp
+*.tmp
+
+# Ignorar archivos de Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Ignorar archivos de JetBrains IDEs
+.idea/
+
+# Ignorar archivos de otros gestores de paquetes
+Pipfile.lock
+poetry.lock
+yarn.lock
+
+# Archivos de entorno específico (Windows/Linux/Mac)
+Thumbs.db
+desktop.ini
