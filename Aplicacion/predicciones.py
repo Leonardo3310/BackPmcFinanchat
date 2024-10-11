@@ -29,7 +29,7 @@ def clasificacion(opiniones):
         prob_ods5 = str(round(float(probabilidades[0][2])*100,2))
 
         prediccion = {
-            "# Opinion": i+1,
+            "opinion": i+1,
             "clase_predicha": clase_predicha,
             "probabilidades": {
                 "ODS 3": prob_ods3+'%',
