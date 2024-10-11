@@ -1,17 +1,21 @@
 import sklearn as sk
 import joblib
-import cloudpickle
+import pandas as pd
 from Dependencies import preprocessing_text, Transformer_Representacion_Seleccion 
 
-# with open('Aplicacion\pipelon.joblib', 'rb') as f:
-#     modelo = cloudpickle.load(f)
+#Cargar el modelo
+modelo = joblib.load('Aplicacion/Modelos/pipelon.joblib')
 
-modelo = joblib.load('Aplicacion/pipelon.joblib')
+#Funcion para clasificar opiniones (End-point #1)
+def clasificacion(opiniones):
+    tamano = len(opiniones)
+    predicciones = []
+    for i in range(tamano):
+        opinion = opiniones[i]
+        opinion_df = pd.DataFrame({'Textos_espanol': [opinion]})
+        prediccion = modelo.predict(opinion_df)
+        predicciones.append(prediccion)
+    return predicciones
 
-dato ='Mujeres'
 
-# 3. Hacer predicciones
-prediccion = modelo.predict(dato)
-
-# 4. Mostrar el resultado
-print("Predicción:", prediccion)
+#Funcion reentrenar el modelo (End-point #2)
