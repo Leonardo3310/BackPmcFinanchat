@@ -4,7 +4,8 @@ import pandas as pd
 from Dependencies import preprocessing_text, Transformer_Representacion_Seleccion 
 
 #Cargar el modelo
-modelo = joblib.load("Aplicacion/pipelon.joblib")
+modelo = joblib.load("Aplicacion/Modelos/pipelon.joblib")
+#modelo_retrain = joblib.load("Aplicacion/Modelos/pipelon-retrain.joblib")
 
 #Funcion para clasificar opiniones (End-point #1)
 def clasificacion(opiniones):
@@ -27,9 +28,9 @@ def clasificacion(opiniones):
             "# Opinion": i+1,
             "clase_predicha": clase_predicha,
             "probabilidades": {
-                "ODS 3": prob_ods3+' %',
-                "ODS 4": prob_ods4+' %',
-                "ODS 5": prob_ods5+' %'
+                "ODS 3": prob_ods3+'%',
+                "ODS 4": prob_ods4+'%',
+                "ODS 5": prob_ods5+'%'
             }
         }
         predicciones.append(prediccion)
