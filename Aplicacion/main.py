@@ -6,7 +6,7 @@ from Dependencies import preprocessing_text, Transformer_Representacion_Seleccio
 # with open('Aplicacion\pipelon.joblib', 'rb') as f:
 #     modelo = cloudpickle.load(f)
 
-modelo = joblib.load('Aplicacion\pipelon.joblib')
+modelo = joblib.load('Aplicacion/pipelon.joblib')
 
 dato ='Mujeres'
 
