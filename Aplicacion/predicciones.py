@@ -2,12 +2,14 @@ import sklearn as sk
 import joblib
 import pandas as pd
 from io import BytesIO
+import os
 from sklearn.model_selection import train_test_split
 from Dependencies import preprocessing_text, Transformer_Representacion_Seleccion 
 from sklearn.metrics import classification_report
 
 #Cargar el modelo
-modelo = joblib.load("Aplicacion/pipelon.joblib")
+modelo = joblib.load('pipelon.joblib')
+
 
 #Funcion para clasificar opiniones (End-point #1)
 def clasificacion(opiniones):
@@ -47,7 +49,7 @@ def unir_datos(file: BytesIO):
     
     return data
 
-df = pd.read_excel('Aplicacion/Data/ODScat_345.xlsx')
+df = pd.read_excel('ODScat_345.xlsx')
 
 #Funcion para reentrenar el modelo (End-point #2)
 def reentrenar_modelo(model, data):
@@ -63,7 +65,7 @@ def reentrenar_modelo(model, data):
     y_pred = model.predict(x_val)
 
     metrics = classification_report(y_val, y_pred)
-    joblib.dump(model, 'Aplicacion/pipelon.joblib')
+    joblib.dump(model, 'pipelon.joblib')
 
     return metrics
 
