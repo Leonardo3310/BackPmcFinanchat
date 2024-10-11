@@ -15,6 +15,7 @@ def index():
 
 @app.post("/prediccion/")
 def hacer_prediccion(opiniones: List[Opinion]):
+    opiniones = [opinion.opinion for opinion in opiniones]
     respuesta = pred.clasificacion(opiniones)
     return respuesta
 

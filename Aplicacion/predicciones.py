@@ -49,7 +49,7 @@ def unir_datos(file: BytesIO):
     
     return data
 
-df = pd.read_excel('ODScat_345.xlsx')
+#df = pd.read_excel('ODScat_345.xlsx')
 
 #Funcion para reentrenar el modelo (End-point #2)
 def reentrenar_modelo(model, data):
@@ -69,5 +69,5 @@ def reentrenar_modelo(model, data):
 
     return metrics
 
-re = reentrenar_modelo(modelo, df)
-print(re)
+#re = reentrenar_modelo(modelo, df)
+#print(re)
