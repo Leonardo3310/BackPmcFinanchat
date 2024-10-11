@@ -36,3 +36,5 @@ async def reentrenar_modelo(file: UploadFile = File(...)):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error durante el reentrenamiento: {str(e)}")
+    
+#uvicorn main:app --reload 
