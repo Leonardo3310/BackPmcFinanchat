@@ -43,7 +43,7 @@ def clasificacion(opiniones):
 
 #Funcion para unir los datos de ambos archivos para el reentrenamiento del modelo
 def unir_datos(file: BytesIO):
-    archivo1 = pd.read_excel('Aplicacion/Data/ODScat_345.xlsx')
+    archivo1 = pd.read_excel('ODScat_345.xlsx')
     archivo2 = pd.read_excel(file)
     data = pd.concat([archivo1, archivo2], ignore_index=True)
     
