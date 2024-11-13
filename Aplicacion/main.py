@@ -1,57 +1,35 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 from pydantic import BaseModel
-import predicciones as pred
-from typing import List
-from io import BytesIO
-from fastapi.middleware.cors import CORSMiddleware
-import nltk
+import openai
 
-# Verificar si el recurso 'punkt' ya está disponible
-try:
-    nltk.data.find('tokenizers/punkt_tab')
-except LookupError:
-    nltk.download('punkt_tab')
+# Configuración de la API de OpenAI
+openai.api_key = "tu_openai_key_aqui"  # Coloca aquí tu API Key
 
-app = FastAPI()
+# Inicializar la aplicación FastAPI
+app = FastAPI(title="Financial Bot API")
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Aquí pones el origen de tu frontend
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Define la clase de datos para las preguntas
+class FinancialQuery(BaseModel):
+    question: str
 
-class Opinion(BaseModel):
-    opinion: str
+# Crear el router para la versión de la API
+api_router = APIRouter(prefix="/api/v1")
 
-@app.get("/")
-def index():
-    return {"message": "Hello World"}
-
-@app.post("/prediccion/")
-def hacer_prediccion(opiniones: List[Opinion]):
-    opiniones = [opinion.opinion for opinion in opiniones]
-    respuesta = pred.clasificacion(opiniones)
-    return respuesta
-
-
-@app.post("/reentrenar/")
-async def reentrenar_modelo(file: UploadFile = File(...)):
-    if file.content_type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-        raise HTTPException(status_code=400, detail="File format not supported")
-
+@api_router.post("/ask", tags=["Consultas Financieras"])
+async def ask_question(query: FinancialQuery):
     try:
-        contents = await file.read()
-        excel_data = BytesIO(contents)
-        df_retrain = pred.unir_datos(excel_data)
-
-        matrics = pred.reentrenar_modelo(pred.modelo, df_retrain)
-
-        return matrics
-
+        # Llamada a la API de OpenAI
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # Cambia el modelo si lo necesitas
+            messages=[
+                {"role": "system", "content": "Eres un bot financiero que proporciona ayuda y asesoramiento financiero."},
+                {"role": "user", "content": query.question}
+            ]
+        )
+        answer = response.choices[0].message["content"]
+        return {"response": answer}
     except Exception as e:
-        print(f"Error en el servidor: {e}")
-        raise HTTPException(status_code=500, detail=f"Error durante el reentrenamiento: {str(e)}")
-    
-#uvicorn main:app --reload 
+        raise HTTPException(status_code=500, detail="Error al procesar la solicitud") from e
+
+# Incluir el router en la aplicación principal
+app.include_router(api_router)
