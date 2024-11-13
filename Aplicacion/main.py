@@ -1,26 +1,25 @@
-from fastapi import FastAPI, HTTPException, APIRouter
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import openai
+import os
 
-# Configuración de la API de OpenAI
-openai.api_key = "tu_openai_key_aqui"  # Coloca aquí tu API Key
 
-# Inicializar la aplicación FastAPI
-app = FastAPI(title="Financial Bot API")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Define la clase de datos para las preguntas
+app = FastAPI()
+
 class FinancialQuery(BaseModel):
     question: str
 
-# Crear el router para la versión de la API
-api_router = APIRouter(prefix="/api/v1")
+@app.get("/")
+async def root():
+    return {"message": "Financial bot API with ChatGPT"}
 
-@api_router.post("/ask", tags=["Consultas Financieras"])
+@app.post("/ask")
 async def ask_question(query: FinancialQuery):
     try:
-        # Llamada a la API de OpenAI
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # Cambia el modelo si lo necesitas
+            model="gpt-3.5-turbo",  # Ajusta el modelo según tu suscripción
             messages=[
                 {"role": "system", "content": "Eres un bot financiero que proporciona ayuda y asesoramiento financiero."},
                 {"role": "user", "content": query.question}
@@ -30,6 +29,3 @@ async def ask_question(query: FinancialQuery):
         return {"response": answer}
     except Exception as e:
         raise HTTPException(status_code=500, detail="Error al procesar la solicitud") from e
-
-# Incluir el router en la aplicación principal
-app.include_router(api_router)
