@@ -1,39 +1,48 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 import openai
+from openai import OpenAI
 
+client = OpenAI(api_key='')
+
+# Configura tu clave API de OpenAI
 
 app = Flask(__name__)
 
-# Set up OpenAI API credentials
-openai.api_key = ''
-
-
-# Define the default route to return the index.html file
 @app.route("/")
 def index():
     return render_template("index.html")
 
-# Define the /api route to handle POST requests
 @app.route("/api", methods=["POST"])
 def api():
-    # Get the message from the POST request
     message = request.json.get("message")
-    # Send the message to OpenAI's API and receive the response
-    
-    
-    completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "user", "content": message}
-    ]
-    )
-    if completion.choices[0].message!=None:
-        return completion.choices[0].message
 
-    else :
-        return 'Failed to Generate response!'
-    
+    if not message:
+        return jsonify({"error": "No message provided"}), 400
 
-if __name__=='__main__':
-    app.run()
+    try:
+        # Solicitud a la API de OpenAI
+        completion = client.chat.completions.create(model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "Eres un Asistente financiero dirigido al público colombiano"},
+            {"role": "user", "content": message}
+        ],
+        temperature=1,
+        max_tokens=2048,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0)
 
+        response_content = completion.choices[0].message.content
+        return jsonify({"response": response_content})
+
+    except openai.OpenAIError as e:
+        # Manejo específico para errores de la API de OpenAI
+        print("Error de OpenAI:", str(e))
+        return jsonify({"error": "OpenAI API error: " + str(e)}), 500
+    except Exception as e:
+        # Captura cualquier otro error general
+        print("Error general:", str(e))
+        return jsonify({"error": "Server error: " + str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
