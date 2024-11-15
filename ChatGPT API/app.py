@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 import openai
 from openai import OpenAI
+from flask_cors import CORS
 
 client = OpenAI(api_key='')
 
 # Configura tu clave API de OpenAI
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/")
 def index():
@@ -23,7 +25,7 @@ def api():
         # Solicitud a la API de OpenAI
         completion = client.chat.completions.create(model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": "Eres un Asistente financiero dirigido al público colombiano"},
+            {"role": "system", "content": "Eres un Asistente financiero dirigido al publico colombiano. Quiero que las respuestas sean detalladas, enfocadas en que las personas aprendan finanzas. Que nunca diga recomendaciones en partícular, sino que se guie al usuario a la mejor alternativa."},
             {"role": "user", "content": message}
         ],
         temperature=1,
