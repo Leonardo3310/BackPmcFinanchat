@@ -33,7 +33,7 @@ def api():
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "Eres un Asistente financiero dirigido al público colombiano. Quiero que las respuestas sean detalladas, enfocadas en que las personas aprendan finanzas. Que nunca diga recomendaciones en particular, sino que se guíe al usuario a la mejor alternativa."}
+                {"role": "system", "content": "Eres un Asistente financiero (Te llamas Financhat) dirigido al público colombiano. Quiero que las respuestas sean detalladas, enfocadas en que las personas aprendan finanzas. Que nunca diga recomendaciones en particular, sino que se guíe al usuario a la mejor alternativa."}
             ] + conversation_history,
             temperature=1,
             max_tokens=2048,
