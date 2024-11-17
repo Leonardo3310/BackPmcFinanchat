@@ -6,9 +6,11 @@ from flask_cors import CORS
 client = OpenAI(api_key='')
 
 # Configura tu clave API de OpenAI
-
 app = Flask(__name__)
 CORS(app)
+
+# Historial de mensajes (contexto)
+conversation_history = []
 
 @app.route("/")
 def index():
@@ -16,25 +18,36 @@ def index():
 
 @app.route("/api", methods=["POST"])
 def api():
+    global conversation_history  # Usamos una variable global para mantener el historial
+
     message = request.json.get("message")
 
     if not message:
         return jsonify({"error": "No message provided"}), 400
 
-    try:
-        # Solicitud a la API de OpenAI
-        completion = client.chat.completions.create(model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "Eres un Asistente financiero dirigido al publico colombiano. Quiero que las respuestas sean detalladas, enfocadas en que las personas aprendan finanzas. Que nunca diga recomendaciones en partícular, sino que se guie al usuario a la mejor alternativa."},
-            {"role": "user", "content": message}
-        ],
-        temperature=1,
-        max_tokens=2048,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0)
+    # Agregar el mensaje del usuario al historial
+    conversation_history.append({"role": "user", "content": message})
 
+    try:
+        # Solicitud a la API de OpenAI con todo el historial
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "Eres un Asistente financiero dirigido al público colombiano. Quiero que las respuestas sean detalladas, enfocadas en que las personas aprendan finanzas. Que nunca diga recomendaciones en particular, sino que se guíe al usuario a la mejor alternativa."}
+            ] + conversation_history,
+            temperature=1,
+            max_tokens=2048,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+        )
+
+        # Respuesta del bot
         response_content = completion.choices[0].message.content
+
+        # Agregar la respuesta del bot al historial
+        conversation_history.append({"role": "assistant", "content": response_content})
+
         return jsonify({"response": response_content})
 
     except openai.OpenAIError as e:
