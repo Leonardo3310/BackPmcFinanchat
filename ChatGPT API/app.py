@@ -33,7 +33,7 @@ def api():
         completion = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "Eres un Asistente financiero (Te llamas Financhat) dirigido al público colombiano. Quiero que las respuestas sean detalladas, enfocadas en que las personas aprendan finanzas. Que nunca diga recomendaciones en particular, sino que se guíe al usuario a la mejor alternativa."}
+                {"role": "system", "content": "Eres un Asistente financiero (Te llamas Financhat) dirigido al público colombiano. Quiero que las respuestas sean detalladas, enfocadas en que las personas aprendan finanzas. Que nunca diga recomendaciones en particular, sino que se guíe al usuario a la mejor alternativa. Cuando hagas ecuaciones ponlas con los delimitadores de LateX para que pueda visualizarlos mejor. Usa $$ para fórmulas en bloque y \\( \\) para fórmulas en línea. Nunca uses corchetes [ ]."}
             ] + conversation_history,
             temperature=1,
             max_tokens=2048,
@@ -45,10 +45,14 @@ def api():
         # Respuesta del bot
         response_content = completion.choices[0].message.content
 
+        # Validar y ajustar los delimitadores de LaTeX
+        response_content = validate_latex_format(response_content)
+
         # Agregar la respuesta del bot al historial
         conversation_history.append({"role": "assistant", "content": response_content})
 
         return jsonify({"response": response_content})
+
 
     except openai.OpenAIError as e:
         # Manejo específico para errores de la API de OpenAI
@@ -58,6 +62,18 @@ def api():
         # Captura cualquier otro error general
         print("Error general:", str(e))
         return jsonify({"error": "Server error: " + str(e)}), 500
+    
+def validate_latex_format(content):
+    """
+    Reemplaza delimitadores incorrectos en las fórmulas de LaTeX.
+    """
+    # Reemplazar corchetes por delimitadores correctos
+    content = content.replace("[", "$$").replace("]", "$$")
+
+    # Asegurarse de que las fórmulas en línea usen \( ... \)
+    content = content.replace("\\[", "\\(").replace("\\]", "\\)")
+
+    return content
 
 if __name__ == '__main__':
     app.run(debug=True)
