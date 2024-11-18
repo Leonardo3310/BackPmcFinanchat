@@ -49,7 +49,7 @@ def api():
         # Validar y ajustar los delimitadores de LaTeX
         response_content = validate_latex_format(response_content)
 
-        # Agregar la respuesta del bot al historial
+        print(response_content)
         conversation_history.append({"role": "assistant", "content": response_content})
 
         return jsonify({"response": response_content})
