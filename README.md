@@ -5,5 +5,5 @@ Jennifer Arce
 Alejandro Charry
 
 Link Repositorio FRONT:
-https://github.com/santimolina1/Front-BI-Proyecto1.git
+[https://github.com/Leonardo3310/chat-bot-frontend.git]
 
